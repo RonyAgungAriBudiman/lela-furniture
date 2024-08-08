@@ -7,16 +7,16 @@ $sqlLib = new sqlLib();
 $term = trim(strip_tags($_GET['term']));
 
 // fetch a title for a better user experience maybe..
-$sql = "SELECT DISTINCT TOP 10 a.KodeTps, a.NamaTps
-		FROM ms_tps a
-		WHERE (a.NamaTps LIKE '%" . $term . "%' OR a.KodeTps LIKE '" . $term . "%') ";
+$sql = "SELECT  SupplierID, NamaSupplier, Alamat, NoTelp, RecUser
+		FROM ms_supplier
+		WHERE (NamaSupplier LIKE '%" . $term . "%' OR SupplierID LIKE '" . $term . "%') LIMIT 10 ";
 $data_brg = $sqlLib->select($sql);
 foreach ($data_brg as $data) {
 
 
-    $row['id'] = $data['KodeTps'];
-    $row['value'] = '(' . $data['KodeTps'] . ') ' . $data['NamaTps'];
-    $row['namatps'] = '(' . $data['KodeTps'] . ') ' . $data['NamaTps'];
+    $row['id'] = $data['SupplierID'];
+    $row['value'] = $data['NamaSupplier'];
+    $row['namasupplier'] = $data['NamaSupplier'];
 
     //buat array yang nantinya akan di konversi ke json
     $row_set[] = $row;
