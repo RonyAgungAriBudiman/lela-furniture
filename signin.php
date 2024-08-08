@@ -7,32 +7,42 @@
 
   if (isset($_POST["signin"])) {
 
+    $userid = $_POST["userid"];
     $password = $_POST["password"];
-    $password = substr(md5($password), 0, 10);
+    $password = substr(md5($password), 1, 11);
 
-    $sqluser = "SELECT a.UserID, a.Nama, a.Admin
-                FROM ms_user a 
-                WHERE a.UserID ='" . $_POST["userid"] . "' AND a.Password ='" . $password . "' ";
+    $sqluser = "SELECT UserID FROM ms_user WHERE UserID ='" . $userid . "' AND Aktif ='1' ";
+    //echo $sqluser;
     $datauser = $sqlLib->select($sqluser);
     if (count($datauser) > 0) {
+      $sqlpass = "SELECT a.UserID, a.Nama, a.Level, a.Image
+                  FROM ms_user a 
+                  WHERE  a.UserID ='" . $userid . "' AND  a.Password = '" . $password . "' ";
+      $datapass = $sqlLib->select($sqlpass);
+      if (count($datapass) > 0) {
 
-      $_SESSION["userid"] = $datauser[0]["UserID"];
-      $_SESSION["admin"]   = $datauser[0]["Admin"];
-      $_SESSION["nama"]   = $datauser[0]["Nama"];
-
-      setcookie("userid", $datauser[0]["UserID"], time() + (3600));
-      setcookie("admin", $datauser[0]["Admin"], time() + (3600));
-      setcookie("nama", $datauser[0]["Nama"], time() + (3600));
-
-      $IP               = getenv("REMOTE_ADDR");
-      $sql_up = "UPDATE ms_user SET Last_Login =getdate(), RecComp = '" . $IP . "' 
-                  WHERE UserID = '" . $_POST["userid"] . "'";
-      $run_up = $sqlLib->update($sql_up);
-      header("location:index.php");
+        $_SESSION["userid"] = $datapass[0]["UserID"];
+        $_SESSION["nama"]   = $datapass[0]["Nama"];
+        $_SESSION["level"]  = $datapass[0]["Level"];
+        $_SESSION["image"]  = $datapass[0]["Image"];
+        
+        setcookie("userid", $datapass[0]["UserID"], time() + (3600 * 24 * 30 * 12));
+        setcookie("nama", $datapass[0]["Nama"], time() + (3600 * 24 * 30 * 12));
+        setcookie("level", $datapass[0]["Level"], time() + (3600 * 24 * 30 * 12));
+        setcookie("image", $datapass[0]["Image"], time() + (3600 * 24 * 30 * 12));
+        header("location:index.php");
+      } else {
+        $alert = 1;
+        $note  = "Userid atau password salah!!";
+      }
     } else {
+
       $alert = 1;
-      $note  = "User ID or Password salah!!";
+      $note  = "UserID tidak ditemukan/tidak aktif!!";
     }
+
+
+    
   }
   ?>
 
@@ -42,10 +52,10 @@
   <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>IT INVENTORY</title>
+    <title>LELA FURNITURE</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <!-- <link rel="icon" type="image/png" href="images/favicon.png"> -->
 
     <!-- General CSS Files -->
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
@@ -70,7 +80,7 @@
             <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
               <div class="login-brand">
                 <!-- <img src="assets/img/stisla-fill.svg" alt="logo" width="100" class="shadow-light rounded-circle"> -->
-                IT INVENTORY
+                LELA FURNITURE
               </div>
 
               <?php

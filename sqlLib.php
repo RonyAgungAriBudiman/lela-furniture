@@ -1,96 +1,122 @@
 <?php
 class sqlLib
 {
-	var $conn;
 	var $srvr;
 	var $db;
 	var $usr;
 	var $psw;
 
-	function sqlLib()
+	//function sqlLib()
+	function __construct()
 	{
 		include dirname(__FILE__) . "/config.php";
 		$this->srvr = $srvr;
 		$this->db = $db;
 		$this->usr = $usr;
 		$this->psw = $psw;
-		$connectionInfo = array("Database" => $this->db, "UID" => $this->usr, "PWD" => $this->psw, 'ReturnDatesAsStrings' => true);
-		$this->conn = sqlsrv_connect($this->srvr, $connectionInfo);
+		$this->conn = new mysqli($this->srvr, $this->usr, $this->psw, $this->db);
+		if (!$this->conn) print "Connection not establish!!!";
+	}
 
-		if (!$this->conn)
-			print "Connection not establish!!!";
-
-		//sqlsrv_close( $this->conn );
+	function antisqlinject($string)
+	{
+		$string = stripslashes($string);
+		$string = strip_tags($string);
+		$string = mysqli_real_escape_string($this->conn, $string);
+		return $string;
 	}
 
 	function select($sql = "")
 	{
-		$params = array();
-		$options =  array("Scrollable" => SQLSRV_CURSOR_KEYSET);
-
-		if (empty($sql) || empty($this->conn)) return false;
-
-		$result = sqlsrv_query($this->conn, $sql, $params, $options);
-		if (empty($result)) return false;
-		if (!$result) return false;;
+		if (empty($sql) || empty($this->conn))
+			return false;
+		$result = mysqli_query($this->conn, $sql);
+		if (empty($result)) {
+			return false;
+		}
+		if (!$result) {
+			mysqli_free_result($result);
+			return false;;
+		}
 		$data = array();
 		$inc = 0;
-		while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+		while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 			$data[$inc] = $row;
 			$inc++;
 		}
-
+		mysqli_free_result($result);
 		return $data;
 	}
 
 	function insert($sql = "")
 	{
-		$status = "1";
-		if (empty($sql)) $status = "0";
-		else {
-			$sql = trim($sql);
-			$sql_arr = explode(" ", strtolower($sql));
-			if ($sql_arr[0] != "insert") $status = "0";
-			else {
-				$result = sqlsrv_query($this->conn, $sql);
-				if (!$result) $status = "0";
-			}
+		$status = "";
+		if (empty($sql)) {
+			return false;
 		}
+		$sql = trim($sql);
+		/*if (!eregi("^insert", $sql))
+		{ 
+			$status = "wrong command, it's insert command only"; 
+		}*/
+		$conn = $this->conn;
+		$result = mysqli_query($this->conn, $sql) or $status = "0";
+
+		if ($result) {
+			$status = "1";
+		}
+
 		return $status;
 	}
 
 	function update($sql = "")
 	{
-		$status = "1";
-		if (empty($sql)) $status = "0";
-		else {
-			$sql = trim($sql);
-			$sql_arr = explode(" ", strtolower($sql));
-			if ($sql_arr[0] != "update") $status = "0";
-			else {
-				$result = sqlsrv_query($this->conn, $sql);
-				if (!$result) $status = "0";
-			}
+		$status = "";
+		if (empty($sql)) {
+			return false;
 		}
+		$sql = trim($sql);
+		/*
+		if (!eregi("^update", $sql))
+		{ 
+			echo"wrong command, it's update command only"; 
+		} 
+		*/
+		$conn = $this->conn;
+		$result = mysqli_query($this->conn, $sql) or $status = "0";
+
+		if ($result) {
+			$status = "1";
+		}
+
 		return $status;
 	}
 	function delete($sql = "")
 	{
-		$status = "1";
-		if (empty($sql)) $status = "0";
-		else {
-			$sql = trim($sql);
-			$sql_arr = explode(" ", strtolower($sql));
-			if ($sql_arr[0] != "delete") $status = "0";
-			else {
-				$result = sqlsrv_query($this->conn, $sql);
-				if (!$result) $status = "0";
-			}
+		$status = "";
+		$sql = trim($sql);
+		if (empty($sql)) {
+			return false;
 		}
+		/*
+		if (!eregi("^delete", $sql))
+		{ 
+			echo"wrong command, it's delete command only"; 
+			return false; 
+		} */
+		if (empty($this->conn)) {
+			return false;
+		}
+
+		$result = mysqli_query($this->conn, $sql) or $status = "0";
+
+		if ($result) {
+			$status = "1";
+		}
+
 		return $status;
 	}
 }
-date_default_timezone_set("Asia/Jakarta");
 
 
 
@@ -156,8 +182,4 @@ function acakacak($action, $string)
 	return $output;
 }
 
-
-//$dateopen = "2022-01-01";
-
-
-//$ipserver = "10.11.12.8";
+	//	error_reporting(1);

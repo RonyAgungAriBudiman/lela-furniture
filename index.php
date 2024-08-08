@@ -1,18 +1,16 @@
 <?php
 session_start();
-include_once "conf.php";
 include_once "sqlLib.php";
 include "function/function.php";
-include "function/ceisa/get_login.php";
-include "function/ceisa/get_token.php";
-include "function/jsonPage.php";
 $sqlLib = new sqlLib();
 if (!isset($_SESSION["userid"])) {
   if ($_COOKIE["userid"] != "") {
 
-    $_SESSION["userid"]   = $_COOKIE["userid"];
-    $_SESSION["admin"]     = $_COOKIE["admin"];
-    $_SESSION["nama"] = $_COOKIE["nama"];
+    $_SESSION["userid"] = $_COOKIE["userid"];
+    $_SESSION["nama"]   = $_COOKIE["nama"];
+    $_SESSION["level"]   = $_COOKIE["level"];
+    $_SESSION["image"]   = $_COOKIE["image"];
+
   } else header("Location:signin.php");
 }
 ?>
@@ -20,12 +18,12 @@ if (!isset($_SESSION["userid"])) {
 <html lang="en">
 	<meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>IT INVENTORY</title>
+    <title>LELA FURNITURE</title>
 	<head>
 		<script src="assets/js/jquery-2.1.3.js"></script>
 		<script src="assets/js/tableHeadFixer.js"></script>
 		<!-- Favicon -->
-    	<link rel="icon" type="image/png" href="images/favicon.png"> 
+    	<!-- <link rel="icon" type="image/png" href="images/favicon.png">  -->
 
 		<!-- General CSS Files -->
 		  <!-- <link rel="stylesheet" href="assets/css/bootstrap.css"> -->
@@ -170,9 +168,9 @@ if (!isset($_SESSION["userid"])) {
 		          </a>
 	              <!-- <div class="dropdown-divider"></div> -->
 
-	              <a href="index.php?m=<?php echo acakacak("encode", "manualbook") ?>&p=<?php echo acakacak("encode", "Manual Book") ?>" class="dropdown-item has-icon">
+	              <!-- <a href="index.php?m=<?php echo acakacak("encode", "manualbook") ?>&p=<?php echo acakacak("encode", "Manual Book") ?>" class="dropdown-item has-icon">
 	                <i class="fas fa-book"></i> Manual Book
-	              </a>
+	              </a> -->
 	              <a href="signout.php" class="dropdown-item has-icon text-danger">
 	                <i class="fas fa-sign-out-alt"></i> Logout
 	              </a>
@@ -183,10 +181,10 @@ if (!isset($_SESSION["userid"])) {
 	      <div class="main-sidebar">
 	        <aside id="sidebar-wrapper">
 	          <div class="sidebar-brand">
-	            <a href="index.php">IT INVENTORY</a>
+	            <a href="index.php">LELA FURNITURE</a>
 	          </div>
 	          <div class="sidebar-brand sidebar-brand-sm">
-	            <a href="index.php">INV</a>
+	            <a href="index.php">LF</a>
 	          </div>
 	           <?php include "menu.php" ?>
 
