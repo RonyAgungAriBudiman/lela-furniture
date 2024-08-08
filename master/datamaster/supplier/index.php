@@ -50,13 +50,13 @@
 			<form method="post" id="form" autocomplete="off" enctype="multipart/form-data">
 				<div class="form-group row mt-3 mb-0">
 					<div class="col-sm-2 ml-4">
-						<input type="text" name="namacustomer" id="namacustomer" value="<?php echo $_POST['namacustomer']; ?>" class="form-control" placeholder="Nama Customer">
-						<input type="hidden" name="customerid" id="customerid" value="<?php echo $_POST['customerid']; ?>" class="form-control">
+						<input type="text" name="namasupplier" id="namasupplier" value="<?php echo $_POST['namasupplier']; ?>" class="form-control" placeholder="Nama Supplier">
+						<input type="hidden" name="supplierid" id="supplierid" value="<?php echo $_POST['supplierid']; ?>" class="form-control">
 					</div>
                     
 					<div class="col-sm-3 ml-3">
 						<button type="submit" name="cari" class="btn btn-primary" value="Cari"><i class="fas fa-search"> </i> Cari</button>
-                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/customer") ?>&sm=<?php echo acakacak("encode", "add") ?>&p=<?php echo $_GET["p"] ?>">
+                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/supplier") ?>&sm=<?php echo acakacak("encode", "add") ?>&p=<?php echo $_GET["p"] ?>">
 				            <button type="button" class="btn btn-info"><i class="fas fa-plus"> </i> Customer</button></a> 
                         
 						<!-- <a href="print/LapBahanBaku.php?dari=<?php echo $_POST['dari'] ?>&sampai=<?php echo $_POST['sampai'] ?>&kodebarang=<?php echo $_POST['kodebarang'] ?>&namabarang=<?php echo $_POST['namabarang'] ?>" target="_blank">
@@ -78,10 +78,9 @@
 						<thead>
 							<tr>
 								<th style="background-color:#133b5c; color:#FFF;">No</th>
-								<th style="background-color:#133b5c; color:#FFF;">Nama Customer</th>
+								<th style="background-color:#133b5c; color:#FFF;">Nama Supplier</th>
 								<th style="background-color:#133b5c; color:#FFF;">Alamat</th>
 								<th style="background-color:#133b5c; color:#FFF;">No Telp</th>
-								<th style="background-color:#133b5c; color:#FFF;">No Ktp</th>
 								<th style="background-color:#133b5c; color:#FFF;">Edit</th>
 							</tr>
 
@@ -90,25 +89,24 @@
 							<?php
 							
                             $kondisi = "";
-                            if ($_POST['customerid'] != "" AND  $_POST['namacustomer'] != "") $kondisi .= " AND a.CustomerID ='" . $_POST['customerid'] . "'";
+                            if ($_POST['supplierid'] != "" AND  $_POST['namasupplier'] != "") $kondisi .= " AND a.SupplierID ='" . $_POST['supplierid'] . "'";
                             
 							$no = 1;
-							$sql = "SELECT a.CustomerID, a.NamaCustomer, a.Alamat, a.NoTelp, a.NoKtp
-									FROM ms_customer a	
-									WHERE a.NamaCustomer != '' " . $kondisi;
-							$sql .= " Order By a.NamaCustomer Asc ";
+							$sql = "SELECT a.SupplierID, a.NamaSupplier, a.Alamat, a.NoTelp
+									FROM ms_supplier a	
+									WHERE a.NamaSupplier != '' " . $kondisi;
+							$sql .= " Order By a.NamaSupplier Asc ";
 							$data = $sqlLib->select($sql);
 							foreach ($data as $row) {
 								
 							?>
 								<tr style="color:#000;">
 									<td style="text-align: center;"><?php echo $no ?></td>
-									<td><?php echo $row['NamaCustomer'] ?></td>
+									<td><?php echo $row['NamaSupplier'] ?></td>
 									<td><?php echo $row['Alamat'] ?></td>
 									<td><?php echo $row['NoTelp'] ?></td>
-									<td><?php echo $row['NoKtp'] ?></td>
 									<td style="text-align: center;">
-                                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/customer") ?>&sm=<?php echo acakacak("encode", "edit") ?>&customerid=<?php echo $row['CustomerID'] ?>&p=<?php echo $_GET["p"] ?>">
+                                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/supplier") ?>&sm=<?php echo acakacak("encode", "edit") ?>&supplierid=<?php echo $row['SupplierID'] ?>&p=<?php echo $_GET["p"] ?>">
 											<button type="button" class="btn btn-success"><i class="fas fa-edit"> </i> Edit</button>
 										</a>
                                     </td>
@@ -137,17 +135,17 @@
 <script>
 	$(document).ready(function() {
 		var ac_config = {
-			source: "json/customer.php",
+			source: "json/supplier.php",
 			select: function(event, ui) {
-				$("#customerid").val(ui.item.id);
-				$("#namacustomer").val(ui.item.namacustomer);
+				$("#supplierid").val(ui.item.id);
+				$("#namasupplier").val(ui.item.namasupplier);
 			},
 			focus: function(event, ui) {
-				$("#customerid").val(ui.item.id);
-				$("#namacustomer").val(ui.item.namacustomer);
+				$("#supplierid").val(ui.item.id);
+				$("#namasupplier").val(ui.item.namasupplier);
 			},
 			minLength: 1
 		};
-		$("#namacustomer").autocomplete(ac_config);
+		$("#namasupplier").autocomplete(ac_config);
 	});
 </script>
