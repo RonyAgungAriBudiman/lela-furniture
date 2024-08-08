@@ -50,28 +50,14 @@
 			<form method="post" id="form" autocomplete="off" enctype="multipart/form-data">
 				<div class="form-group row mt-3 mb-0">
 					<div class="col-sm-2 ml-4">
-						<input type="text" name="namabarang" id="namabarang" value="<?php echo $_POST['namabarang']; ?>" class="form-control" placeholder="Nama Barang">
-						<input type="hidden" name="barangid" id="barangid" value="<?php echo $_POST['barangid']; ?>" class="form-control">
+						<input type="text" name="namacustomer" id="namacustomer" value="<?php echo $_POST['namacustomer']; ?>" class="form-control" placeholder="Nama Customer">
+						<input type="hidden" name="customerid" id="customerid" value="<?php echo $_POST['customerid']; ?>" class="form-control">
 					</div>
-                    <div class="col-sm-2">
-                        <select name="merk" id="merk" class="form-control">
-								<option value="">Pilih Merk</option>
-								<?php
-								$sql_1 = "SELECT DISTINCT Merk FROM ms_barang ";
-								$data_1 = $sqlLib->select($sql_1);
-								foreach ($data_1 as $row_1) {
-								?><option value="<?php echo $row_1['Merk'] ?>" <?php if ($_POST['merk'] == $row_1['Merk']) {
-																					echo "selected";
-																				} ?>><?php echo $row_1['Merk'] ?></option> <?php
-																														}
-																															?>
-						</select>
-					</div>
-
+                    
 					<div class="col-sm-3 ml-3">
 						<button type="submit" name="cari" class="btn btn-primary" value="Cari"><i class="fas fa-search"> </i> Cari</button>
-                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/barang") ?>&sm=<?php echo acakacak("encode", "add") ?>&p=<?php echo $_GET["p"] ?>">
-				            <button type="button" class="btn btn-info"><i class="fas fa-plus"> </i> Barang</button></a> 
+                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/customer") ?>&sm=<?php echo acakacak("encode", "add") ?>&p=<?php echo $_GET["p"] ?>">
+				            <button type="button" class="btn btn-info"><i class="fas fa-plus"> </i> Customer</button></a> 
                         
 						<!-- <a href="print/LapBahanBaku.php?dari=<?php echo $_POST['dari'] ?>&sampai=<?php echo $_POST['sampai'] ?>&kodebarang=<?php echo $_POST['kodebarang'] ?>&namabarang=<?php echo $_POST['namabarang'] ?>" target="_blank">
 							<input type="button" class="btn btn-warning" name="cetak" Value="Cetak">
@@ -92,9 +78,10 @@
 						<thead>
 							<tr>
 								<th style="background-color:#133b5c; color:#FFF;">No</th>
-								<th style="background-color:#133b5c; color:#FFF;">Nama Barang</th>
-								<th style="background-color:#133b5c; color:#FFF;">Spesifikasi</th>
-								<th style="background-color:#133b5c; color:#FFF;">Merk</th>
+								<th style="background-color:#133b5c; color:#FFF;">Nama Customer</th>
+								<th style="background-color:#133b5c; color:#FFF;">Alamat</th>
+								<th style="background-color:#133b5c; color:#FFF;">No Telp</th>
+								<th style="background-color:#133b5c; color:#FFF;">No Ktp</th>
 								<th style="background-color:#133b5c; color:#FFF;">Edit</th>
 							</tr>
 
@@ -103,24 +90,25 @@
 							<?php
 							
                             $kondisi = "";
-                            if ($_POST['barangid'] != "" AND  $_POST['namabarang'] != "") $kondisi .= " AND a.BarangID ='" . $_POST['barangid'] . "'";
-                            if ($_POST['merk'] != "") $kondisi .= " AND a.Merk ='" . $_POST['merk'] . "'";
+                            if ($_POST['customerid'] != "" AND  $_POST['namacustomer'] != "") $kondisi .= " AND a.CustomerID ='" . $_POST['customerid'] . "'";
+                            
 							$no = 1;
-							$sql = "SELECT a.BarangID, a.NamaBarang, a.Merk, a.Spesifikasi
-                                    FROM ms_barang a	
-                                    WHERE a.NamaBarang != '' " . $kondisi;
-							$sql .= " Order By a.NamaBarang Asc ";
+							$sql = "SELECT a.CustomerID, a.NamaCustomer, a.Alamat, a.NoTelp, a.NoKtp
+									FROM ms_customer a	
+									WHERE a.NamaCustomer != '' " . $kondisi;
+							$sql .= " Order By a.NamaCustomer Asc ";
 							$data = $sqlLib->select($sql);
 							foreach ($data as $row) {
 								
 							?>
 								<tr style="color:#000;">
 									<td style="text-align: center;"><?php echo $no ?></td>
-									<td><?php echo $row['NamaBarang'] ?></td>
-									<td><?php echo $row['Spesifikasi'] ?></td>
-									<td><?php echo $row['Merk'] ?></td>
+									<td><?php echo $row['NamaCustomer'] ?></td>
+									<td><?php echo $row['Alamat'] ?></td>
+									<td><?php echo $row['NoTelp'] ?></td>
+									<td><?php echo $row['NoKtp'] ?></td>
 									<td style="text-align: center;">
-                                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/barang") ?>&sm=<?php echo acakacak("encode", "edit") ?>&barangid=<?php echo $row['BarangID'] ?>&p=<?php echo $_GET["p"] ?>">
+                                        <a href="index.php?m=<?php echo acakacak("encode", "datamaster/customer") ?>&sm=<?php echo acakacak("encode", "edit") ?>&customerid=<?php echo $row['CustomerID'] ?>&p=<?php echo $_GET["p"] ?>">
 											<button type="button" class="btn btn-success"><i class="fas fa-edit"> </i> Edit</button>
 										</a>
                                     </td>
@@ -135,7 +123,7 @@
 						</tbody>
 						<tfoot>
 							<tr style="background-color:#133b5c; color:#FFF; font-weight: bold;">
-								<td style="text-align: center;" colspan="5">&nbsp;</td>
+								<td style="text-align: center;" colspan="6">&nbsp;</td>
 							</tr>
 						</tfoot>
 					</table>
